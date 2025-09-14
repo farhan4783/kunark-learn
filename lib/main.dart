@@ -13,6 +13,7 @@ import 'tasks_screen.dart';
 import 'package:hive_flutter/hive_flutter.dart'; // Add this import
 import 'saved_lesson_model.dart';
 import 'quiz_model.dart';
+import 'dashboard/dashboard_screen.dart';
 
 
 // This is the global state manager for our theme (Dark/Light mode).
@@ -109,7 +110,7 @@ class _MainPageState extends State<MainPage> {
   int _currentIndex = 0;
   final List<Widget> _pages = [
     const HomeScreen(),
-    DashboardScreen(),
+    const NewDashboardScreen(),
     AchievementsScreen(),
     const ProfileScreen(),
   ];

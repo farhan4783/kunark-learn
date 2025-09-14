@@ -1,4 +1,4 @@
-// lib/task_model.dart
+// lib/task_model.dart - FINAL UPDATED VERSION
 
 // ignore: unused_import
 import 'package:flutter/material.dart';
@@ -13,6 +13,7 @@ class Task {
   final TaskType type;
   final TaskStatus status;
   final int points;
+  final double progress; // <<< STEP 1: ADD THIS NEW PROPERTY
 
   const Task({
     required this.title,
@@ -20,5 +21,6 @@ class Task {
     required this.type,
     required this.status,
     required this.points,
+    this.progress = 0.0, // <<< STEP 2: ADD THIS TO THE CONSTRUCTOR (with a default value)
   });
 }
