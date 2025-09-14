@@ -21,7 +21,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   // IMPORTANT: Replace with your actual Gemini API Key
   // For production apps, store this securely (e.g., environment variables)
-  static const _apiKey = "AIzaSyDrigIkz5ZzPXz8hPc0UVhEg7uIt4ZBHyY";
+  static const _apiKey = "Your Api Key";
 
   @override
   void initState() {
