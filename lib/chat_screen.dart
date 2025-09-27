@@ -17,12 +17,9 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _textController = TextEditingController();
   final List<ChatMessage> _messages = [];
   final ScrollController _scrollController = ScrollController();
-  late final GenerativeModel _model;
-  late final ChatSession _chat;
-
-  // IMPORTANT: Replace with your actual Gemini API Key
-  // For production apps, store this securely (e.g., environment variables)
-  static const _apiKey = "AIzaSyDrigIkz5ZzPXz8hPc0UVhEg7uIt4ZBHyY";
+  GenerativeModel? _model;
+  ChatSession? _chat;
+  bool _isInitialized = false;
 
   @override
   void initState() {
@@ -31,15 +28,13 @@ class _ChatScreenState extends State<ChatScreen> {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
     // Load the API key from the appEnv map
-    final _apiKey = appEnv['GEMINI_API_KEY'];
-    if (_apiKey != null && _apiKey.isNotEmpty && _apiKey != "YOUR_API_KEY_HERE") {
+    final apiKey = appEnv['GEMINI_API_KEY'];
+    if (apiKey != null && apiKey.isNotEmpty && apiKey != "YOUR_API_KEY_HERE") {
       try {
-        _model = GenerativeModel(model: 'gemini-2.0-flash', apiKey: _apiKey);
+        _model = GenerativeModel(model: 'gemini-2.0-flash', apiKey: apiKey);
         _chat = _model!.startChat();
       } catch (e) {
         print('Error initializing AI model: $e');
-        _model = null;
-        _chat = null;
       }
     }
   }
@@ -53,6 +48,7 @@ class _ChatScreenState extends State<ChatScreen> {
         // Handle the case where the API key is not set.
         // For a real app, you might show an error message or disable AI features.
         _messages.add(
+          // ignore: prefer_const_constructors
           ChatMessage(
             text: "API key not set. Please add your Gemini API key.",
             isUser: false,
@@ -62,6 +58,7 @@ class _ChatScreenState extends State<ChatScreen> {
       } else {
         // Add the initial welcome message from Mickey Mouse
         _messages.add(
+          // ignore: prefer_const_constructors
           ChatMessage(
             text: "Hi! I'm Mickey, your AI helper. Ask me anything!",
             isUser: false,
@@ -96,6 +93,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if (_chat == null) {
       // If API key is not set, show error message
       setState(() {
+        // ignore: prefer_const_constructors
         _messages.add(ChatMessage(text: "API key not set. Please add your Gemini API key.", isUser: false, sender: "AI"));
       });
       _scrollToBottom();
@@ -112,6 +110,7 @@ class _ChatScreenState extends State<ChatScreen> {
         });
       } else {
         setState(() {
+          // ignore: prefer_const_constructors
           _messages.add(ChatMessage(text: "Sorry, I didn't catch that.", isUser: false, sender: "Mickey"));
         });
       }
