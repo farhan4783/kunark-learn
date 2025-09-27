@@ -98,7 +98,7 @@ class _GeographyQuizScreenState extends State<GeographyQuizScreen> {
                   child: Text(option, style: const TextStyle(fontSize: 16)),
                 ),
               );
-            }).toList(),
+            }),
             const Spacer(),
             // Next Button
             ElevatedButton(

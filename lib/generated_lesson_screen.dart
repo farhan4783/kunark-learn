@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'app_colors.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'saved_lesson_model.dart';
 
@@ -27,10 +28,9 @@ class _GeneratedLessonScreenState extends State<GeneratedLessonScreen> {
   }
 
   Future<void> _generateLesson() async {
-    // IMPORTANT: Make sure your API key is correctly set in chat_screen.dart
-    // or manage it in a more secure way. For now, we'll hardcode it here.
-    const apiKey = "AIzaSyDrigIkz5ZzPXz8hPc0UVhEg7uIt4ZBHyY";
-    if (apiKey == "YOUR_API_KEY_HERE") {
+    // Load the API key from the .env file
+    final apiKey = dotenv.env['GEMINI_API_KEY'];
+    if (apiKey == null || apiKey.isEmpty) {
       setState(() {
         _error = "API Key not set. Please add your Gemini API key.";
         _isLoading = false;
@@ -38,7 +38,7 @@ class _GeneratedLessonScreenState extends State<GeneratedLessonScreen> {
       return;
     }
     final model =
-        GenerativeModel(model: 'gemini-1.5-flash-latest', apiKey: apiKey);
+        GenerativeModel(model: 'gemini-2.0-flash', apiKey: apiKey);
 
     // This is the "prompt" that tells the AI what to do.
     // A detailed prompt gives better results.

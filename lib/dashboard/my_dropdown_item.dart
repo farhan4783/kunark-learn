@@ -1,6 +1,8 @@
 // lib/dashboard/my_dropdown_item.dart
 
 import 'package:flutter/material.dart';
+import 'package:rural_learning_app/app_colors.dart';
+// ignore: unused_import
 import 'package:rural_learning_app/main.dart'; // Import to use AppColors
 
 class MyDropdownButtonItem extends StatelessWidget {

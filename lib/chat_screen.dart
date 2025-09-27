@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // For SystemChrome
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'main.dart';
 import 'app_colors.dart'; // Make sure this import is correct
 
 class ChatScreen extends StatefulWidget {
@@ -16,12 +17,9 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _textController = TextEditingController();
   final List<ChatMessage> _messages = [];
   final ScrollController _scrollController = ScrollController();
-  late final GenerativeModel _model;
-  late final ChatSession _chat;
-
-  // IMPORTANT: Replace with your actual Gemini API Key
-  // For production apps, store this securely (e.g., environment variables)
-  static const _apiKey = "AIzaSyDrigIkz5ZzPXz8hPc0UVhEg7uIt4ZBHyY";
+  GenerativeModel? _model;
+  ChatSession? _chat;
+  bool _isInitialized = false;
 
   @override
   void initState() {
@@ -29,29 +27,47 @@ class _ChatScreenState extends State<ChatScreen> {
     // Hide status bar for a more immersive look, and then restore it on dispose
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
-    if (_apiKey.isEmpty || _apiKey == "YOUR_API_KEY_HERE") {
-      // Handle the case where the API key is not set.
-      // For a real app, you might show an error message or disable AI features.
-      _messages.add(
-        const ChatMessage(
-          text: "Oops! My AI brain isn't connected. Please check your API Key!",
-          isUser: false,
-          sender: "System",
-          avatarImage: 'assets/images/mickey_mouse_welcome.png', // Use Mickey for system messages too
-        ),
-      );
-    } else {
-      _model = GenerativeModel(model: 'gemini-1.5-flash-latest', apiKey: _apiKey);
-      _chat = _model.startChat();
-      // Add the initial welcome message from Mickey Mouse
-      _messages.add(
-        const ChatMessage(
-          text: "Hi there, future genius! I'm Mickey, your friendly AI Helper. What exciting things do you want to learn about today?",
-          isUser: false,
-          sender: "Mickey",
-          avatarImage: 'assets/images/mickey_mouse_welcome.png',
-        ),
-      );
+    // Load the API key from the appEnv map
+    final _apiKey = appEnv['GEMINI_API_KEY'];
+    if (_apiKey != null && _apiKey.isNotEmpty && _apiKey != "YOUR_API_KEY_HERE") {
+      try {
+        _model = GenerativeModel(model: 'gemini-2.0-flash', apiKey: _apiKey);
+        _chat = _model!.startChat();
+      } catch (e) {
+        print('Error initializing AI model: $e');
+        _model = null;
+        _chat = null;
+      }
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      _isInitialized = true;
+      if (_model == null) {
+        // Handle the case where the API key is not set.
+        // For a real app, you might show an error message or disable AI features.
+        _messages.add(
+          ChatMessage(
+            text: "API key not set. Please add your Gemini API key.",
+            isUser: false,
+            sender: "AI",
+          ),
+        );
+      } else {
+        // Add the initial welcome message from Mickey Mouse
+        _messages.add(
+          ChatMessage(
+            text: "Hi! I'm Mickey, your AI helper. Ask me anything!",
+            isUser: false,
+            sender: "Mickey",
+          ),
+        );
+      }
+      setState(() {});
+      _scrollToBottom();
     }
   }
 
@@ -74,27 +90,31 @@ class _ChatScreenState extends State<ChatScreen> {
 
     _scrollToBottom();
 
-    if (_apiKey.isEmpty || _apiKey == "YOUR_API_KEY_HERE") {
-      // If API key is not set, don't try to send message to AI
+    if (_chat == null) {
+      // If API key is not set, show error message
+      setState(() {
+        _messages.add(ChatMessage(text: "API key not set. Please add your Gemini API key.", isUser: false, sender: "AI"));
+      });
+      _scrollToBottom();
       return;
     }
 
     try {
-      final response = await _chat.sendMessage(Content.text(text));
+      final response = await _chat!.sendMessage(Content.text(text));
       final String? aiResponse = response.text;
 
       if (aiResponse != null) {
         setState(() {
-          _messages.add(ChatMessage(text: aiResponse, isUser: false, sender: "Mickey", avatarImage: 'assets/images/mickey_mouse_welcome.png'));
+          _messages.add(ChatMessage(text: aiResponse, isUser: false, sender: "Mickey"));
         });
       } else {
         setState(() {
-          _messages.add(ChatMessage(text: "I didn't quite catch that. Could you please rephrase?", isUser: false, sender: "Mickey", avatarImage: 'assets/images/mickey_mouse_welcome.png'));
+          _messages.add(ChatMessage(text: "Sorry, I didn't catch that.", isUser: false, sender: "Mickey"));
         });
       }
     } catch (e) {
       setState(() {
-        _messages.add(ChatMessage(text: "Oops! Something went wrong: $e", isUser: false, sender: "Mickey", avatarImage: 'assets/images/mickey_mouse_welcome.png'));
+        _messages.add(ChatMessage(text: "Something went wrong: ${e.toString()}", isUser: false, sender: "Mickey"));
       });
       print("Error sending message to AI: $e");
     } finally {
@@ -118,8 +138,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mickey Your AI Helper', style: TextStyle(color: Colors.white)),
-        backgroundColor: AppColors.primary,
+        title: const Text("AI Helper", style: TextStyle(color: Colors.white)),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Column(
@@ -144,7 +163,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Widget _buildTextComposer() {
     return IconTheme(
-      data: IconThemeData(color: AppColors.primary),
+      data: const IconThemeData(color: AppColors.primary),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Row(
@@ -153,7 +172,7 @@ class _ChatScreenState extends State<ChatScreen> {
               child: TextField(
                 controller: _textController,
                 onSubmitted: _handleSubmitted,
-                decoration: const InputDecoration.collapsed(hintText: "Ask Mickey anything!"),
+                decoration: const InputDecoration.collapsed(hintText: "Ask Mickey..."),
                 style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
               ),
             ),
@@ -221,7 +240,7 @@ class ChatMessage extends StatelessWidget {
                   margin: const EdgeInsets.only(top: 5.0),
                   padding: const EdgeInsets.all(12.0),
                   decoration: BoxDecoration(
-                    color: isUser ? AppColors.primary.withOpacity(0.8) : AppColors.tile.withOpacity(0.8),
+                    color: isUser ? AppColors.primary.withOpacity(0.8) : Theme.of(context).cardColor.withOpacity(0.8),
                     borderRadius: BorderRadius.only(
                       topLeft: const Radius.circular(15.0),
                       topRight: const Radius.circular(15.0),

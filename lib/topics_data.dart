@@ -3,22 +3,45 @@
 // A map that links a subject name to a list of lesson topics.
 final Map<String, List<String>> subjectsToTopics = {
   'English': [
-    'What is a English Grammar',
-    'Basics of Marketing',
-    'Understanding Supply and Demand',
-    'Customer Service Essentials',
+    'Grammar',
+    'Vocabulary',
+    'Reading Comprehension',
+    'Writing Skills',
+    'Literature',
   ],
   'Chemistry': [
-    'Introduction to Atoms',
-    'Acids and Bases',
-    'The Periodic Table',
+    'Periodic Table',
     'Chemical Reactions',
+    'Organic Chemistry',
+    'Inorganic Chemistry',
+    'Laboratory Techniques',
   ],
   'Biology': [
-    'Basic First Aid',
-    'Understanding Nutrition',
-    'Common Illnesses and Prevention',
-    'The Human Body Systems',
+    'Cell Biology',
+    'Genetics',
+    'Human Anatomy',
+    'Ecology',
+    'Evolution',
   ],
-  // Add more subjects and topics here
+  'Language': [
+    'Phonetics',
+    'Syntax',
+    'Semantics',
+    'Pragmatics',
+    'Language Acquisition',
+  ],
+  'Physics': [
+    'Mechanics',
+    'Thermodynamics',
+    'Waves and Optics',
+    'Electricity and Magnetism',
+    'Modern Physics',
+  ],
+  'Maths': [
+    'Algebra',
+    'Geometry',
+    'Trigonometry',
+    'Calculus',
+    'Statistics',
+  ],
 };

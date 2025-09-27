@@ -1,11 +1,14 @@
 #include "my_application.h"
 
+#include <gtk/gtk.h>
 #include <flutter_linux/flutter_linux.h>
-#ifdef GDK_WINDOWING_X11
+#if defined(GDK_WINDOWING_X11)
 #include <gdk/gdkx.h>
 #endif
 
 #include "flutter/generated_plugin_registrant.h"
+
+#define APPLICATION_ID "com.example.rural_learning_app"
 
 struct _MyApplication {
   GtkApplication parent_instance;
@@ -13,10 +16,13 @@ struct _MyApplication {
 };
 
 G_DEFINE_TYPE(MyApplication, my_application, GTK_TYPE_APPLICATION)
+G_DEFINE_TYPE(MyApplication, my_application, GTK_TYPE_APPLICATION);
+
+static GObjectClass* my_application_parent_class = nullptr;
 
 // Called when first Flutter frame received.
-static void first_frame_cb(MyApplication* self, FlView *view)
-{
+static void first_frame_cb(FlView* view, gpointer user_data) {
+  MyApplication* self = MY_APPLICATION(user_data);
   gtk_widget_show(gtk_widget_get_toplevel(GTK_WIDGET(view)));
 }
 
@@ -55,25 +61,31 @@ static void my_application_activate(GApplication* application) {
 
   gtk_window_set_default_size(window, 1280, 720);
 
+  FlDartProject* project = fl_dart_project_new();
   g_autoptr(FlDartProject) project = fl_dart_project_new();
   fl_dart_project_set_dart_entrypoint_arguments(project, self->dart_entrypoint_arguments);
 
   FlView* view = fl_view_new(project);
   GdkRGBA background_color;
   // Background defaults to black, override it here if necessary, e.g. #00000000 for transparent.
-  gdk_rgba_parse(&background_color, "#000000");
-  fl_view_set_background_color(view, &background_color);
+  if (gdk_rgba_parse(&background_color, "#000000")) {
+    fl_view_set_background_color(view, &background_color);
+  }
   gtk_widget_show(GTK_WIDGET(view));
   gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(view));
 
   // Show the window when Flutter renders.
   // Requires the view to be realized so we can start rendering.
-  g_signal_connect_swapped(view, "first-frame", G_CALLBACK(first_frame_cb), self);
+  g_signal_connect(view, "first-frame", G_CALLBACK(first_frame_cb), self);
   gtk_widget_realize(GTK_WIDGET(view));
 
   fl_register_plugins(FL_PLUGIN_REGISTRY(view));
 
   gtk_widget_grab_focus(GTK_WIDGET(view));
+
+  gtk_widget_show(GTK_WIDGET(window));
+
+  g_object_unref(project);
 }
 
 // Implements GApplication::local_command_line.
@@ -97,8 +109,6 @@ static gboolean my_application_local_command_line(GApplication* application, gch
 
 // Implements GApplication::startup.
 static void my_application_startup(GApplication* application) {
-  //MyApplication* self = MY_APPLICATION(object);
-
   // Perform any actions required at application startup.
 
   G_APPLICATION_CLASS(my_application_parent_class)->startup(application);
@@ -106,8 +116,6 @@ static void my_application_startup(GApplication* application) {
 
 // Implements GApplication::shutdown.
 static void my_application_shutdown(GApplication* application) {
-  //MyApplication* self = MY_APPLICATION(object);
-
   // Perform any actions required at application shutdown.
 
   G_APPLICATION_CLASS(my_application_parent_class)->shutdown(application);
@@ -121,6 +129,7 @@ static void my_application_dispose(GObject* object) {
 }
 
 static void my_application_class_init(MyApplicationClass* klass) {
+  my_application_parent_class = G_OBJECT_CLASS(g_type_class_peek_parent(klass));
   G_APPLICATION_CLASS(klass)->activate = my_application_activate;
   G_APPLICATION_CLASS(klass)->local_command_line = my_application_local_command_line;
   G_APPLICATION_CLASS(klass)->startup = my_application_startup;
@@ -137,8 +146,11 @@ MyApplication* my_application_new() {
   // the application to be recognized beyond its binary name.
   g_set_prgname(APPLICATION_ID);
 
+MyApplication* my_application_new(const gchar* application_id, GApplicationFlags flags) {
   return MY_APPLICATION(g_object_new(my_application_get_type(),
                                      "application-id", APPLICATION_ID,
                                      "flags", G_APPLICATION_NON_UNIQUE,
+                                     "application-id", application_id,
+                                     "flags", flags,
                                      nullptr));
 }

@@ -1,18 +1,22 @@
 // lib/subjects_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:rural_learning_app/l10n/app_localizations.dart';
 import 'app_colors.dart'; // Make sure you have this file with your AppColors class
+// ignore: unused_import
 import 'lessons_screen.dart';
 import 'subject_model.dart';
+import 'subject_options_screen.dart';
 
 class SubjectsScreen extends StatelessWidget {
   const SubjectsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Subjects', style: TextStyle(color: Colors.white)),
+        title: Text(l10n.subjects, style: const TextStyle(color: Colors.white)),
         backgroundColor: AppColors.primary,
         iconTheme: const IconThemeData(color: Colors.white), // Makes the back arrow white
       ),
@@ -44,10 +48,10 @@ class SubjectCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // Navigate to the LessonsScreen, passing the subject name
+        // Navigate to the SubjectOptionsScreen, passing the subject name
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => LessonsScreen(subjectName: subject.name),
+            builder: (context) => SubjectOptionsScreen(subjectName: subject.name),
           ),
         );
       },

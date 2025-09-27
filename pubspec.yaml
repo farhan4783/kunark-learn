@@ -11,9 +11,15 @@ dependencies:
   flutter:
     sdk: flutter
 
+  flutter_localizations:
+    sdk: flutter
+
+  image_picker: ^1.0.4
+
   google_generative_ai: ^0.4.3
-  intl: ^0.19.0
+  intl: ^0.20.2
   cupertino_icons: ^1.0.6
+  flutter_dotenv: ^5.1.0
 
   flutter_markdown: ^0.7.3
 
@@ -27,21 +33,41 @@ dependencies:
 
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-hive_flutter: ^1.1.0
-path_provider: ^2.0.11
+  flutter_gen: ^5.9.0
+  path_provider: ^2.0.11
+
+  # Dependencies for Math Monster Battle Game
+  google_fonts: ^6.1.0
+  audioplayers: ^5.2.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
 
+  flutter_launcher_icons: ^0.14.4
+
   hive_generator: ^2.0.0
   build_runner: ^2.3.3
 
 flutter:
   uses-material-design: true
+  generate: true
 
   assets:
     - assets/images/mickey_mouse_welcome.png
     - assets/images/bg1.png
     - assets/images/mascot.png
+    # - assets/images/hero.png
+    # - assets/images/monster1.png
+    # - assets/images/monster2.png
+    - assets/audio/bg-music.mp3
+    - assets/.env
+
+flutter_intl:
+  enabled: true
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/icon.png"

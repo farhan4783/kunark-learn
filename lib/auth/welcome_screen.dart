@@ -1,8 +1,10 @@
 // lib/auth/welcome_screen.dart - NEW MODERN DESIGN
 
 import 'package:flutter/material.dart';
+import 'package:rural_learning_app/app_colors.dart';
 import 'package:rural_learning_app/auth/signin_screen.dart';
 import 'package:rural_learning_app/auth/signup_screen.dart';
+// ignore: unused_import
 import 'package:rural_learning_app/main.dart'; // To use AppColors
 
 class WelcomeScreen extends StatelessWidget {
@@ -110,7 +112,7 @@ class WelcomeScreen extends StatelessWidget {
                               topLeft: Radius.circular(30),
                             ),
                           ),
-                          child: Text(
+                          child: const Text(
                             'Sign up',
                             textAlign: TextAlign.center,
                             style: TextStyle(

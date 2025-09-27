@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'app_colors.dart';
 import 'achievement_models.dart';
+import 'l10n/app_localizations.dart';
 
 class AchievementsScreen extends StatelessWidget {
   // UPDATED to use the new class name: AchievementBadge
@@ -39,7 +40,7 @@ class AchievementsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Salman Khan'),
+        title: Text(AppLocalizations.of(context)!.profile), 
         leading: const Padding(
           padding: EdgeInsets.all(8.0),
           child: CircleAvatar(
