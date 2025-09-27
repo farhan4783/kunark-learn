@@ -23,7 +23,7 @@ class _QuizLoadingScreenState extends State<QuizLoadingScreen> {
   }
 
   Future<void> _generateQuizQuestions() async {
-    const apiKey = "YOUR_API_KEY_HERE"; // Replace with your actual Gemini API Key from https://makersuite.google.com/app/apikey
+    const apiKey = "AIzaSyDGf7nzkyxXWYmWs6orKAGxxRpwFKQyAjs"; // Make sure to use your Gemini API Key
     if (apiKey == "YOUR_API_KEY_HERE") {
        // Handle API key missing error
       return;

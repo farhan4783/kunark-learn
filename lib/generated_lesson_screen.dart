@@ -28,9 +28,10 @@ class _GeneratedLessonScreenState extends State<GeneratedLessonScreen> {
   }
 
   Future<void> _generateLesson() async {
-    // Load the API key from the .env file
-    final apiKey = dotenv.env['GEMINI_API_KEY'];
-    if (apiKey == null || apiKey.isEmpty) {
+    // IMPORTANT: Make sure your API key is correctly set in chat_screen.dart
+    // or manage it in a more secure way. For now, we'll hardcode it here.
+    const apiKey = "AIzaSyDrigIkz5ZzPXz8hPc0UVhEg7uIt4ZBHyY";
+    if (apiKey == "YOUR_API_KEY_HERE") {
       setState(() {
         _error = "API Key not set. Please add your Gemini API key.";
         _isLoading = false;

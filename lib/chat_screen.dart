@@ -17,9 +17,12 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _textController = TextEditingController();
   final List<ChatMessage> _messages = [];
   final ScrollController _scrollController = ScrollController();
-  GenerativeModel? _model;
-  ChatSession? _chat;
-  bool _isInitialized = false;
+  late final GenerativeModel _model;
+  late final ChatSession _chat;
+
+  // IMPORTANT: Replace with your actual Gemini API Key
+  // For production apps, store this securely (e.g., environment variables)
+  static const _apiKey = "AIzaSyDrigIkz5ZzPXz8hPc0UVhEg7uIt4ZBHyY";
 
   @override
   void initState() {
